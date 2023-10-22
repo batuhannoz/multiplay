@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class MultiplayeUI : MonoBehaviour
+public class MultiplayerUI : MonoBehaviour
 {
     public void StartServer() {
         NetworkManager.Singleton.StartServer();    
