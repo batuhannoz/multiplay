@@ -1,22 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
-    [SerializeField] public float MovementSpeed = 1;
-    private float h;   
+    [SerializeField] public float speed = 100;
 
-    Rigidbody2D rb;
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-    }
+    [SerializeField] public Rigidbody2D rb;
 
-    // Update is called once per frame
-    void Update()
+    public void Update()
     {
-        h = Input.GetAxisRaw("Horizontal");
-        if (h != 0) rb.velocity = new Vector2(h,0) * MovementSpeed * Time.deltaTime;
+        if (IsOwner) {
+            float h = Input.GetAxis("Horizontal");
+            float v = Input.GetAxis("Vertical");
+
+            rb.velocity = new Vector2(h, v) * Time.deltaTime * speed;
+        }
     }
 }
+
