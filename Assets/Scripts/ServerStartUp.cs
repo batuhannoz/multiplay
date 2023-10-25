@@ -9,8 +9,6 @@ using UnityEngine;
 using Newtonsoft.Json;
 using System.Threading;
 using Unity.Services.Matchmaker;
-using UnityEditor.Networking.PlayerConnection;
-using Unity.Collections.LowLevel.Unsafe;
 
 public class ServerStartUp : MonoBehaviour
 {
