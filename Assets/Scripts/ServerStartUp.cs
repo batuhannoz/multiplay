@@ -14,6 +14,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 public class ServerStartUp : MonoBehaviour
 {
+    public static event System.Action ClientInstance;
     private string internalServerIP = "0.0.0.0";
     private string externalServerIP = "0.0.0.0";
     private ushort serverPort = 9000;
@@ -46,6 +47,8 @@ public class ServerStartUp : MonoBehaviour
         if (Server) {
             StartServer();
             await StartServerServices();
+        } else {
+            ClientInstance.Invoke();
         }
     }
 
@@ -59,13 +62,13 @@ public class ServerStartUp : MonoBehaviour
         await UnityServices.InitializeAsync();
         try {
             multiplayService = MultiplayService.Instance;
-            await multiplayService.StartServerQueryHandlerAsync(4, "n/a", "n/a", "0", "n/a");
+            await multiplayService.StartServerQueryHandlerAsync(2, "n/a", "n/a", "0", "n/a");
         } catch (Exception ex) {
             Debug.LogWarning(ex);
         }
 
         try {
-            matchmakingPayload= await GetMatchmakerPayload(multiplayServiceTimeout);
+            matchmakingPayload = await GetMatchmakerPayload(multiplayServiceTimeout);
             if (matchmakingPayload != null) {
                 Debug.Log($"Got Payload: {matchmakingPayload}");
                 await StartBackfill(matchmakingPayload);
@@ -75,7 +78,6 @@ public class ServerStartUp : MonoBehaviour
         }
         catch (Exception ex) {
             Debug.LogWarning(ex);
-
         }
     }
 
