@@ -1,6 +1,11 @@
 # multiplay
 
-## 1v1 json for matchmaker service
+## Build configuration
+```bash
+-ip 0.0.0.0 -port $$port$$ -queryPort $$query_port$$ -logFile $$log_dir$$/matchplaylog.log
+```
+
+## 1v1 gamemode json for matchmaker service
 ```json
 {
   "Name": "1v1",
@@ -22,4 +27,4 @@
   },
   "BackfillEnabled": true
 }
-"""
+```
