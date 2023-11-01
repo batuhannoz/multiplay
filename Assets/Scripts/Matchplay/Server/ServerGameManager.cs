@@ -198,8 +198,8 @@ namespace Matchplay.Server
         public static GameInfo PickGameInfo(MatchmakingResults mmAllocation)
         {
             //All the players should have the same info, so we just pick the first one to use as the starter.
-            var chosenMap = Map.Lab;
-            var chosenMode = GameMode.Staring;
+            var chosenMap = Map.Normal;
+            var chosenMode = GameMode.Normal;
 
             foreach (var player in mmAllocation.MatchProperties.Players)
             {

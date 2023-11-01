@@ -8,20 +8,17 @@ namespace Matchplay.Shared
 {
     public enum Map
     {
-        Lab,
-        Space
+        Normal
     }
 
     public enum GameMode
     {
-        Staring,
-        Meditating
+        Normal
     }
 
     public enum GameQueue
     {
-        Casual,
-        Competitive
+        Normal
     }
 
     /// <summary>
@@ -126,12 +123,10 @@ namespace Matchplay.Shared
         public string ToSceneName => ConvertToScene(map);
 
         //QueueNames in the dashboard can be different than your local queue definitions (If you want nice names for them)
-        const string k_MultiplayCasualQueue = "casual-queue";
-        const string k_MultiplayCompetetiveQueue = "competetive-queue";
+        const string k_MultiplayNormalQueue = "normal";
         static readonly Dictionary<string, GameQueue> k_MultiplayToLocalQueueNames = new Dictionary<string, GameQueue>
         {
-            { k_MultiplayCasualQueue, GameQueue.Casual },
-            { k_MultiplayCompetetiveQueue, GameQueue.Competitive }
+            { k_MultiplayNormalQueue, GameQueue.Normal },
         };
 
         public override string ToString()
@@ -151,10 +146,8 @@ namespace Matchplay.Shared
         {
             switch (map)
             {
-                case Map.Lab:
-                    return "game_lab";
-                case Map.Space:
-                    return "game_space";
+                case Map.Normal:
+                    return "Game";
                 default:
                     Debug.LogWarning($"{map} - is not supported.");
                     return "";
@@ -169,9 +162,9 @@ namespace Matchplay.Shared
         {
             return gameQueue switch
             {
-                GameQueue.Casual => k_MultiplayCasualQueue,
-                GameQueue.Competitive => k_MultiplayCompetetiveQueue,
-                _ => k_MultiplayCasualQueue
+                GameQueue.Normal => k_MultiplayNormalQueue,
+                
+                _ => k_MultiplayNormalQueue
             };
         }
 
@@ -180,7 +173,7 @@ namespace Matchplay.Shared
             if (!k_MultiplayToLocalQueueNames.ContainsKey(multiplayQueue))
             {
                 Debug.LogWarning($"No QueuePreference that maps to {multiplayQueue}");
-                return GameQueue.Casual;
+                return GameQueue.Normal;
             }
 
             return k_MultiplayToLocalQueueNames[multiplayQueue];

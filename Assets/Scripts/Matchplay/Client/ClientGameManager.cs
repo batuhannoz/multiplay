@@ -125,7 +125,7 @@ namespace Matchplay.Client
 
             if (matchmakingResult.result == MatchmakerPollingResult.Success)
                 BeginConnection(matchmakingResult.ip, matchmakingResult.port);
-            else
+            else 
                 Debug.LogWarning($"{matchmakingResult.result} : {matchmakingResult.resultMessage}");
 
             return matchmakingResult.result;

@@ -50,9 +50,9 @@ namespace Matchplay.Shared
 
                 var defaultGameInfo = new GameInfo
                 {
-                    gameMode = GameMode.Meditating,
-                    map = Map.Space,
-                    gameQueue = GameQueue.Casual
+                    gameMode = GameMode.Normal,
+                    map = Map.Normal,
+                    gameQueue = GameQueue.Normal
                 };
 
                 await serverSingleton.Manager.StartGameServerAsync(defaultGameInfo);

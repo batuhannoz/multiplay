@@ -10,11 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7854692722659636290}
   - component: {fileID: 4826157097153548624}
-  - component: {fileID: -8117467966511955662}
   - component: {fileID: 321263615857731172}
   - component: {fileID: -2397185240428462953}
   - component: {fileID: 2550354403469407285}
   - component: {fileID: -4120124495585138020}
+  - component: {fileID: 6483300206478410624}
+  - component: {fileID: 1826892528566836807}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -57,20 +58,6 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &-8117467966511955662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 393951522257158663}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 490a0f816292848a18b2b7f09ff47d6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 1000
-  rb: {fileID: -2397185240428462953}
 --- !u!212 &321263615857731172
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -192,3 +179,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6483300206478410624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 393951522257158663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 490a0f816292848a18b2b7f09ff47d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 100
+  rb: {fileID: -2397185240428462953}
+--- !u!114 &1826892528566836807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 393951522257158663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 504e4423a1c791947806edd3a0d3a992, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerColor:
+    m_InternalValue: {r: 0, g: 0, b: 0, a: 0}
+  m_ColorSwitcher: {fileID: 0}
