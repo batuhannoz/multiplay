@@ -5,7 +5,6 @@ using System.Threading;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
-using Timer = Unity.VisualScripting.Timer;
 
 namespace Player
 {
@@ -121,7 +120,7 @@ namespace Player
             {
                 float h = Input.GetAxis("Horizontal");
                 float v = Input.GetAxis("Vertical");
-                Move(new Vector2(h, v));
+                inputVector = new Vector2(h, v);
             }
             
             networkTimer.Update(Time.deltaTime);
@@ -158,12 +157,11 @@ namespace Player
             StatePayload statePayload = ProcessMovement(inputPayload);
             clientStateBuffer.Add(statePayload, bufferIndex);
             
-            // HandleServerReconciliation();
+            HandleServerReconciliation();
         }
         
         [ServerRpc]
         void SendToServerRpc(InputPayload input) {
-            Debug.Log($"Received input from client Tick: {input.tick} Client POS: {input.position}");
             serverInputQueue.Enqueue(input);
         }
         
@@ -187,7 +185,6 @@ namespace Player
         
         [ClientRpc]
         void SendToClientRpc(StatePayload statePayload) {
-            Debug.Log($"Received state from server Tick {statePayload.tick} Server POS: {statePayload.position}"); 
             if (!IsOwner) return;
             lastServerState = statePayload;
         }
@@ -256,57 +253,9 @@ namespace Player
 
         public void Move(Vector2 inputVector)
         {
-            
+            rb.velocity = inputVector * Time.deltaTime * 100f;
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        /*
-        [SerializeField] public float speed = 100;
-
-        [SerializeField] public Rigidbody2D rb;
-
-        public void Update()
-        {
-            if (IsOwner) {
-                float h = Input.GetAxis("Horizontal");
-                float v = Input.GetAxis("Vertical");
-
-                Move(new Vector2(h, v));
-            }
-        }
-        []
-        public void Move(Vector2 NewMoveDirection)
-        {
-            rb.velocity = NewMoveDirection * Time.deltaTime * speed;
-        }
-        */
     }
-    
 }
 
 

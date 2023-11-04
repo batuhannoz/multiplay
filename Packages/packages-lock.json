@@ -310,7 +310,7 @@
     },
     "com.unity.services.wire": {
       "version": "1.2.2",
-      "depth": 1,
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.services.core": "1.11.0",
