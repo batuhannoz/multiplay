@@ -2,12 +2,86 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.Mathematics;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Player
 {
+    public abstract class Timer {
+        protected float initialTime;
+        protected float Time { get; set; }
+        public bool IsRunning { get; protected set; }
+        
+        public float Progress => Time / initialTime;
+        
+        public Action OnTimerStart = delegate { };
+        public Action OnTimerStop = delegate { };
+
+        protected Timer(float value) {
+            initialTime = value;
+            IsRunning = false;
+        }
+
+        public void Start() {
+            Time = initialTime;
+            if (!IsRunning) {
+                IsRunning = true;
+                OnTimerStart.Invoke();
+            }
+        }
+
+        public void Stop() {
+            if (IsRunning) {
+                IsRunning = false;
+                OnTimerStop.Invoke();
+            }
+        }
+        
+        public void Resume() => IsRunning = true;
+        public void Pause() => IsRunning = false;
+        
+        public abstract void Tick(float deltaTime);
+    }
+    
+    public class CountdownTimer : Timer {
+        public CountdownTimer(float value) : base(value) { }
+
+        public override void Tick(float deltaTime) {
+            if (IsRunning && Time > 0) {
+                Time -= deltaTime;
+            }
+            
+            if (IsRunning && Time <= 0) {
+                Stop();
+            }
+        }
+        
+        public bool IsFinished => Time <= 0;
+        
+        public void Reset() => Time = initialTime;
+        
+        public void Reset(float newTime) {
+            initialTime = newTime;
+            Reset();
+        }
+    }
+    
+    public class StopwatchTimer : Timer {
+        public StopwatchTimer() : base(0) { }
+
+        public override void Tick(float deltaTime) {
+            if (IsRunning) {
+                Time += deltaTime;
+            }
+        }
+        
+        public void Reset() => Time = 0;
+        
+        public float GetTime() => Time;
+    }
     public class NetworkTimer {
         float timer;
         public float MinTimeBetweenTicks { get; }
@@ -83,7 +157,7 @@ namespace Player
     public class PlayerController : NetworkBehaviour
     {
         [SerializeField] private Rigidbody2D rb;
-
+        [SerializeField] public float movementSpeed;
         public Vector2 inputVector;
         
         // Netcode general
@@ -102,6 +176,9 @@ namespace Player
         Queue<InputPayload> serverInputQueue;
         
         [SerializeField] float reconciliationThreshold = 10f;
+        CountdownTimer reconciliationTimer;
+        [SerializeField] float reconciliationCooldownTime = 1f;
+
 
 
         private void Awake()
@@ -112,6 +189,9 @@ namespace Player
             
             serverStateBuffer = new CircularBuffer<StatePayload>(k_bufferSize);
             serverInputQueue = new Queue<InputPayload>();
+            
+            reconciliationTimer = new CountdownTimer(reconciliationCooldownTime);
+
         }
 
         private void Update()
@@ -121,15 +201,15 @@ namespace Player
                 float h = Input.GetAxis("Horizontal");
                 float v = Input.GetAxis("Vertical");
                 inputVector = new Vector2(h, v);
+                Debug.Log(inputVector);
             }
             
             networkTimer.Update(Time.deltaTime);
+            reconciliationTimer.Tick(Time.deltaTime);
         }
 
         private void FixedUpdate()
         {
-            if (!IsOwner) return;
-
             while (networkTimer.ShouldTick())
             {
                 HandleClientTick();
@@ -139,7 +219,6 @@ namespace Player
         
         void HandleClientTick() {
             if (!IsClient || !IsOwner) return;
-
             var currentTick = networkTimer.CurrentTick;
             var bufferIndex = currentTick % k_bufferSize;
             
@@ -152,6 +231,7 @@ namespace Player
             };
             
             clientInputBuffer.Add(inputPayload, bufferIndex);
+            
             SendToServerRpc(inputPayload);
             
             StatePayload statePayload = ProcessMovement(inputPayload);
@@ -253,7 +333,7 @@ namespace Player
 
         public void Move(Vector2 inputVector)
         {
-            rb.velocity = inputVector * Time.deltaTime * 100f;
+            rb.velocity = inputVector * Time.deltaTime * movementSpeed;
         }
     }
 }
