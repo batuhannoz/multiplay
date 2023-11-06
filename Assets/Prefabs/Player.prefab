@@ -148,9 +148,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: -2397185240428462953}
-  movementSpeed: 400
+  movementSpeed: 350
   inputVector: {x: 0, y: 0}
-  reconciliationThreshold: 2
+  reconciliationThreshold: 0.6
   reconciliationCooldownTime: 2
 --- !u!114 &1826892528566836807
 MonoBehaviour:

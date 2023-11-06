@@ -170,12 +170,13 @@ namespace Player
         CircularBuffer<InputPayload> clientInputBuffer;
         StatePayload lastServerState;
         StatePayload lastProcessedState;
+        InputPayload lastInputPayload;
     
         // Netcode server specific
         CircularBuffer<StatePayload> serverStateBuffer;
         Queue<InputPayload> serverInputQueue;
         
-        [SerializeField] float reconciliationThreshold = 10f;
+        [SerializeField] float reconciliationThreshold = 4f;
         CountdownTimer reconciliationTimer;
         [SerializeField] float reconciliationCooldownTime = 1f;
 
@@ -191,7 +192,6 @@ namespace Player
             serverInputQueue = new Queue<InputPayload>();
             
             reconciliationTimer = new CountdownTimer(reconciliationCooldownTime);
-
         }
 
         private void Update()
@@ -219,23 +219,28 @@ namespace Player
         
         void HandleClientTick() {
             if (!IsClient || !IsOwner) return;
+            
             var currentTick = networkTimer.CurrentTick;
             var bufferIndex = currentTick % k_bufferSize;
+
+            if (!(inputVector == Vector2.zero && lastInputPayload.inputVector == Vector2.zero))
+            {
+                InputPayload inputPayload = new InputPayload() { 
+                    tick = currentTick,
+                    timestamp = DateTime.Now, 
+                    networkObjectId = NetworkObjectId, 
+                    inputVector = inputVector, 
+                    position = transform.position
+                };
             
-            InputPayload inputPayload = new InputPayload() {
-                tick = currentTick,
-                timestamp = DateTime.Now,
-                networkObjectId = NetworkObjectId,
-                inputVector = inputVector,
-                position = transform.position
-            };
+                clientInputBuffer.Add(inputPayload, bufferIndex); 
+                SendToServerRpc(inputPayload);
+                lastInputPayload = inputPayload;
             
-            clientInputBuffer.Add(inputPayload, bufferIndex);
+                StatePayload statePayload = ProcessMovement(inputPayload); 
+                clientStateBuffer.Add(statePayload, bufferIndex);
+            }
             
-            SendToServerRpc(inputPayload);
-            
-            StatePayload statePayload = ProcessMovement(inputPayload);
-            clientStateBuffer.Add(statePayload, bufferIndex);
             
             HandleServerReconciliation();
         }
@@ -264,7 +269,10 @@ namespace Player
         }
         
         [ClientRpc]
-        void SendToClientRpc(StatePayload statePayload) {
+        void SendToClientRpc(StatePayload statePayload)
+        {
+            if (!IsOwner && IsClient && !IsServer)
+                transform.position = Vector2.Lerp(transform.position, statePayload.position, movementSpeed * Time.fixedDeltaTime);
             if (!IsOwner) return;
             lastServerState = statePayload;
         }
