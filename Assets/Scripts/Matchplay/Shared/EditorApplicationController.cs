@@ -4,6 +4,8 @@ using ParrelSync;
 using Matchplay.Shared;
 using UnityEngine;
 
+using Random = System.Random;
+
 namespace Matchplay.Editor
 {
     ///Helps launch ParrelSynced Projects for easy testing
@@ -27,7 +29,11 @@ namespace Matchplay.Editor
                 }
             }
             else
-                m_Controller.OnParrelSyncStarted(false, "client");
+            {
+                Random random = new Random();
+                int randomNumber = random.Next(100, 1000);
+                m_Controller.OnParrelSyncStarted(false, "client" + randomNumber);
+            }
 #endif
         }
     }
