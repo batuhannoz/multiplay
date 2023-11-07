@@ -179,9 +179,7 @@ namespace Player
         [SerializeField] float reconciliationThreshold = 4f;
         CountdownTimer reconciliationTimer;
         [SerializeField] float reconciliationCooldownTime = 1f;
-
-
-
+        
         private void Awake()
         {
             networkTimer = new NetworkTimer(k_serverTickRate);
@@ -194,6 +192,11 @@ namespace Player
             reconciliationTimer = new CountdownTimer(reconciliationCooldownTime);
         }
 
+        private void Start()
+        {
+            if (IsOwner) GameObject.Find("MainCamera").GetComponent<CameraController>().setTarget(gameObject.transform);
+        }
+
         private void Update()
         {
             if (IsOwner)
@@ -201,7 +204,6 @@ namespace Player
                 float h = Input.GetAxis("Horizontal");
                 float v = Input.GetAxis("Vertical");
                 inputVector = new Vector2(h, v);
-                Debug.Log(inputVector);
             }
             
             networkTimer.Update(Time.deltaTime);

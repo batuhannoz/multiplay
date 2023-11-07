@@ -9,13 +9,13 @@ EditorBuildSettings:
     path: Assets/Scenes/MainScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
+    path: Assets/Scenes/mainMenu.unity
     guid: 36e01751cd98a445baa468d7d433c37b
   - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: c27c8756cd5fd824a8c3a545c843ba8a
   - enabled: 1
-    path: Assets/Scenes/LobbyRelayTest.unity
+    path: Assets/Scenes/GameTest.unity
     guid: f3dd4c65ed493a641a797e4c962b7aa3
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
