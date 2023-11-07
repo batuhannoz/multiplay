@@ -26,9 +26,7 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     [Tooltip("The speed used in the lerp function when the camera follows the target")]
     private float speed = 5;
-
-    private Vector3 velocity = Vector3.zero;
-     
+    
     ///<summary>
     /// Contains the positions of the target for the last X seconds
     ///</summary>
